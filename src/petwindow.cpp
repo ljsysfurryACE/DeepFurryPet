@@ -286,12 +286,7 @@ void PetWindow::mouseReleaseEvent(QMouseEvent* event) {
         int dy = releasePos.y() - m_pressStartPos.y();
         int dx = releasePos.x() - m_pressStartPos.x();
 
-        if (!m_isDragging && dy > 60 && abs(dx) < 100) {
-            // 下滑 → 呼出 DeepFurry 对话
-            if (!m_chatVisible) {
-                toggleChatDialog();
-            }
-        } else if (!m_isDragging && abs(dx) < 8 && abs(dy) < 8) {
+        if (!m_isDragging && abs(dx) < 8 && abs(dy) < 8) {
             // 视为点击 → 走单击/双击判定
             m_clickCount++;
             if (m_clickCount == 1) {
@@ -321,7 +316,8 @@ void PetWindow::mouseMoveEvent(QMouseEvent* event) {
         QPoint cur = event->globalPosition().toPoint();
         int dy = cur.y() - m_pressStartPos.y();
         // 如果移动距离超过阈值 → 拖窗 (非手势)
-        if (abs(cur.x() - m_pressStartPos.x()) > 8 || dy < -8) {
+        if (abs(cur.x() - m_pressStartPos.x()) > 8 || abs(dy) > 8) {
+            // 任意方向都能拖 (含向下 — 呼对话改用右键)
             m_isDragging = true;
             // 修复: 用按下时窗口位置 + 全局位移 (原公式两同源坐标相减=0, 拖不动)
             move(m_windowPosAtPress + cur - m_pressStartPos);
