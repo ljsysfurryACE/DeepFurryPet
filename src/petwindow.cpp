@@ -248,6 +248,7 @@ void PetWindow::checkTimeOfDay() {
 void PetWindow::mousePressEvent(QMouseEvent* event) {
     if (event->button() == Qt::LeftButton) {
         m_dragStartPos = event->globalPosition().toPoint();
+        m_windowPosAtPress = pos();   // 记录按下时窗口位置
         m_isDragging = false;
         m_dragStartedDownward = false;
         // 左键按下: 记录起始位置用于手势判断
@@ -322,7 +323,8 @@ void PetWindow::mouseMoveEvent(QMouseEvent* event) {
         // 如果移动距离超过阈值 → 拖窗 (非手势)
         if (abs(cur.x() - m_pressStartPos.x()) > 8 || dy < -8) {
             m_isDragging = true;
-            move(pos() + event->pos() - event->position().toPoint());
+            // 修复: 用按下时窗口位置 + 全局位移 (原公式两同源坐标相减=0, 拖不动)
+            move(m_windowPosAtPress + cur - m_pressStartPos);
         }
     }
 }

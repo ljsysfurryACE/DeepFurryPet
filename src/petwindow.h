@@ -70,6 +70,7 @@ private:
     bool m_dragStartedDownward = false;
     QPoint m_dragStartPos;
     QPoint m_pressStartPos;
+    QPoint m_windowPosAtPress;  // 按下时窗口位置 (拖动用)
     QElapsedTimer m_pressTime;
 
     // Click tracking (单击/双击区分)
